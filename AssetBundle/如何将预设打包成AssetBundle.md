@@ -39,5 +39,5 @@ public static class Build{
 	}
 }
 ```
-3. 在编辑器中选择预设cube_1,cube_2,点击工具栏build脚本生成的Custom/Create AssetBundle按钮即可为选择的预设打包。打包结果如下图
+3. 在编辑器中选择预设cube_1,cube_2,点击工具栏build脚本生成的Custom/Create AssetBundle按钮即可为选择的预设打包。每一个AssetBundle资源会有一个和文件相关的Mainfest 的文本类型的文件，该文件提供了所打包资源的CRC和资源依赖的信息。打包结果如下图
 ![Image of deque](https://github.com/KleinParadise/Unity/blob/master/AssetBundle/pic/assetbundle.png)
