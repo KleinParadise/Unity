@@ -7,3 +7,13 @@
 6. 双击Assets/LuaFramework/Scene/Main场景,点击运行按钮,框架Hello World启动运行。
 
 ### ToLua框架中各个文件夹的作用。
+![Image of unityfile](https://github.com/KleinParadise/Unity/blob/master/pic/unity_tolua_file.png)
+1. Editor：里面是例子用到的一个新手引导步骤演示的编辑器脚本。
+2. Examples ：框架自带的Demo例子
+3. Lua：框架自带的Lua源码目录，用户自定义的Lua脚本也就是放在这里面，最后打包的时候，打包脚本会将其按目录结构生成到StreaminAssets目录里面去，然后在将其上传到游戏的Web服务器上面，用于准备被每个游戏客户端下载更新他们本地的Lua脚本。达到热更目的。
+   1. 3rd：里面是第三方的一些插件lua、实例源码文件，比如：cjson、pbc、pblua、sproto等。
+   2. Common：公用的lua文件目录，如define.lua文件，一些变量声明，全局配置等，functions.lua常用函数库，通讯的protocal.lua协议文件。
+   3. Controller：控制器目录，它不依赖于某一个Lua面板，它是独立存活在Luavm中的一个操作类，操作数据、控制面板显示而已。
+   4. Logic：目录里面存放的是一些管理器类，比如GameManager游戏管理器、NetworkManager网络管理器，如果你有新的管理器可以放到里面。
+   5. View：这是面板的视图层，里面都是一些被Unity调用的面板的变量，走的是Unity GameObject的生命周期的事件调用。
+4. 
