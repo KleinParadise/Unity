@@ -78,3 +78,13 @@ function LoadAssetBundle(go)
     end
 end
 ```
+### LuaFramework热更新流程
+1. Main脚本调用启动函数Startup；
+2. 游戏管理器GameManager生成；
+3. GameManager调用CheckExtractResource函数，检查“数据目录”是否存在；
+4. 若“数据目录”不存在，说明是初次运行游戏，将“游戏包资源目录”的内容解压缩到“数据目录”；
+5. 若“数据目录”存在，检查是否需要从服务器下载资源，GameManager调用OnUpdateResource函数下载“网络资源地址”上的files.txt，然后与“数据目录”中文件的md5码做对比，更新有变化的文件；
+6. 更新完成后，GameManager调用OnResourceInited函数，启动Lua状态机，游戏开始。
+
+**AppConst类的UpdateMode设为true，则从指定服务器下载资源，否则从本地“数据目录”获取。LuaBundleMode设为true，则从AssetBundle解压Lua脚本，否则直接读取项目脚本。**
+
