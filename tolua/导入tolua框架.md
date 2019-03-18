@@ -64,17 +64,17 @@ public void LoadPrefab(string abName, string[] assetNames, LuaFunction func) {
 ```
 2. 在lua中可通过以下方式加载ab
 ```lua
-function Main()					
-	print("logic start")
-	LuaHelper = LuaFramework.LuaHelper
-	resMgr = LuaHelper.GetResManager
-	resMgr:LoadPrefab("myprefabs.unity3d", {"Sphere", "Cube"}, LoadAssetBundle)
+function Main()                 
+    print("logic start")
+    LuaHelper = LuaFramework.LuaHelper
+    resMgr = LuaHelper.GetResManager
+    resMgr:LoadPrefab("myprefabs.unity3d", {"Sphere", "Cube"}, LoadAssetBundle)
 end
 --回调
 function LoadAssetBundle(go)
-	for i = 0, go.Length - 1, 1 do
-		UnityEngine.GameObject.Instantiate(go[i])
-		--go是userdata类型，遍历的时候必须用Length去取得长度
-	end
+    for i = 0, go.Length - 1, 1 do
+         --go是userdata类型，遍历的时候必须用Length去取得长度
+        UnityEngine.GameObject.Instantiate(go[i])
+    end
 end
 ```
