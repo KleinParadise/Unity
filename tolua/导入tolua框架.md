@@ -38,4 +38,43 @@ void StartMain() {
 只需要把lua.DoFile里面的参数修改为你自定义的lua文件名，然后LuaFunction main=lua.GetFunction(“Main”)这一行的括号内的参数，修改为作为入口且存在于你自定义的lua文件中的lua方法即可。
 
 ### 利用ToLua框架把资源打包成AssetBundle
-1. 
+1. LuaFramework框架对资源和lua脚本(Build XXX Resources 的功能)打包的文件都写在了Assets/LuaFramework/Editor/Packager.cs这个类中
+2. HandleExampleBundle该函数实现了一个将美术资源打包的例子。
+3. HandleLuaBundle ， HandleLuaFile 这两个函数是将Lua文件打包成AssetBundle的
+
+
+### 利用ToLua框架加载打包好AssetBundle
+1. 在ResourceManager类中，框架提供了三个重载LoadPrefab方法
+```c#
+public void LoadPrefab(string abName, string assetName, Action<UObject[]> func) {
+   LoadAsset<GameObject>(abName, new string[] { assetName }, func);
+}
+
+public void LoadPrefab(string abName, string[] assetNames, Action<UObject[]> func) {
+   LoadAsset<GameObject>(abName, assetNames, func);
+}
+
+public void LoadPrefab(string abName, string[] assetNames, LuaFunction func) {
+   LoadAsset<GameObject>(abName, assetNames, null, func);
+}
+
+//第一个参数表示:要加载的AssetBundle包的名字
+//第二个参数表示:需要加载此包中哪些美术素材
+//第三个参数表示:回调方法（这个方法的参数列表有一个UnityEngine.Object[]类型的变量的，这个数组变量存的就是你所加载的美术资源）
+```
+2. 在lua中可通过以下方式加载ab
+```lua
+function Main()					
+	print("logic start")
+	LuaHelper = LuaFramework.LuaHelper
+	resMgr = LuaHelper.GetResManager
+	resMgr:LoadPrefab("myprefabs.unity3d", {"Sphere", "Cube"}, LoadAssetBundle)
+end
+--回调
+function LoadAssetBundle(go)
+	for i = 0, go.Length - 1, 1 do
+		UnityEngine.GameObject.Instantiate(go[i])
+		--go是userdata类型，遍历的时候必须用Length去取得长度
+	end
+end
+```
