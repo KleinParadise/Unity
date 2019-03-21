@@ -202,7 +202,11 @@ local transform = tempGameObject.GetComponent("Transform")
 ### lua中c#实例的真正存储位置
 每一个c#实例在lua中是一个内容为整数索引的fulluserdata，在进行函数调用时，通过这个整数索引查找和调用这个索引代表的实例的函数和变量。  
 lua中调用和创建的c#实例实际都是存在c#中的objects表中，lua中的变量只是一个持有该c#实例索引位置的fulluserdata，并没有直接对c#实例进行引用。对c#实例进行函数的调用和变量的修改都是通过元表调用操作wrap文件中的函数进行的。  
-流程图如下:
+```lua
+local tempGameObject = UnityEngine.GameObject("temp")
+local transform = tempGameObject.GetComponent("Transform")
+```
+上述代码流程图如下:
 ![Image of unityfile](https://github.com/KleinParadise/Unity/blob/master/pic/toluapic.png)
 
 
