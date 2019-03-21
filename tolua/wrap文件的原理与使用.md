@@ -132,7 +132,78 @@ public static void Register(LuaState L)
 
 ##### EndClass
 ①设置类的元表  
-②把该类加到所在模块代表的表中（如将GameObject加入到UnityEngine表中）  
+②把该类加到所在模块代表的表中（如将GameObject加入到UnityEngine表中）
+
+#### 函数实体部分
+```c#
+[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+static int GetComponent(IntPtr L)
+{
+    try
+    {
+        //获取栈中参数的个数
+        int count = LuaDLL.lua_gettop(L);
+        //根据栈中元素的个数和元素的类型判断该使用那一个重载
+        if (count == 2 && TypeChecker.CheckTypes<string>(L, 2))
+        {
+            //将栈底的元素取出来，这个obj在栈中是一个fulluserdata，需要先将这个fulluserdata转化成对应的c#实例，也就是调用这个GetComponent函数的GameObject实例
+            UnityEngine.GameObject obj = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+            //将栈底的上一个元素取出来，也就是GetComponent(string type)的参数
+            string arg0 = ToLua.ToString(L, 2);
+            //通过obj，arg0直接第调用GetCompent(string type)函数
+            UnityEngine.Component o = obj.GetComponent(arg0);
+            //将调用结果压栈
+            ToLua.Push(L, o);
+            //返回参数的个数
+            return 1;
+        }
+        //另一个GetComponent的重载，跟上一个差不多，就不详细说明了
+        else if (count == 2 && TypeChecker.CheckTypes<System.Type>(L, 2))
+        {
+            UnityEngine.GameObject obj = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+            System.Type arg0 = (System.Type)ToLua.ToObject(L, 2);
+            UnityEngine.Component o = obj.GetComponent(arg0);
+            ToLua.Push(L, o);
+            return 1;
+        }
+        //参数数量或类型不对，没有找到对应的重载，抛出错误
+        else
+        {
+            return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.GameObject.GetComponent");
+        }
+    }
+    catch (Exception e)
+    {
+        return LuaDLL.toluaL_exception(L, e);
+    }
+}
+```
+
+#### lua调用c#函数的过程
+```lua
+local tempGameObject = UnityEngine.GameObject("temp")
+local transform = tempGameObject.GetComponent("Transform")
+```
+第二句代码的实际调用过程:  
+1. 从tempGameObject的元表查找GetComponent函数。
+2. 取到了GetComponent函数后,将tempGameObject，"Transform"作为参数压入桟中,然后调用GetComponent函数。
+3. 进入到GetComponent内部操作,因为生成了新的ci，所以此时栈中只有tempGameOjbect,"Transfrom"两个元素。
+4. 根据参数的数量和类型判断具体调用哪个重载的函数体
+5. 通过tempGameObject代表的c#实例的索引，在objects表中找到对应的实例。同时取出"Transform"这个参数，准备进行真正的函数调用。
+6. 执行obj.GetComponent(arg0)，将结果包装成一个fulluserdata后压栈，结束调用。
+7. lua中的transfrom变量赋值为这个压栈的fulluserdata。
+步骤3-7都在是warp文件中完成的。
+
+### 一个类通过wrap文件注册进lua虚拟机后是什么样子的
+以GameObject类举例:  
+1. GameObject类：其实只是一个放在_G表中供人调用的一个充当索引的表，我们通过它来触发GameObject元表的各种元方法，实现对c#类的使用。
+2. GameObject的实例：是一个fulluserdata,内容为一个整数，这个整数代表了这个实例在objects表中的索引（objects是一个用list实现的回收链表，lua中调用的c#类实例都存在这个里面），每次在lua中调用一个c#实例的方法时，都会通过这个索引找到这个索引在c#中对应的实例，然后进行操作，最后将操作结果转化为一个fulluserdata（或lua的内建类型，如bool等）压栈，结束调用。
+
+### lua中c#实例的真正存储位置
+每一个c#实例在lua中是一个内容为整数索引的fulluserdata，在进行函数调用时，通过这个整数索引查找和调用这个索引代表的实例的函数和变量。  
+lua中调用和创建的c#实例实际都是存在c#中的objects表中，lua中的变量只是一个持有该c#实例索引位置的fulluserdata，并没有直接对c#实例进行引用。对c#实例进行函数的调用和变量的修改都是通过元表调用操作wrap文件中的函数进行的。
+流程图如下:
+
 
 
                   
