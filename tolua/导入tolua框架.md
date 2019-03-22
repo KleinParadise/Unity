@@ -88,3 +88,6 @@ end
 
 **AppConst类的UpdateMode设为true，则从指定服务器下载资源，否则从本地“数据目录”获取。LuaBundleMode设为true，则从AssetBundle解压Lua脚本，否则直接读取项目脚本。**
 
+### LuaFramework 启动流程图
+![Image of unityfile](https://github.com/KleinParadise/Unity/blob/master/pic/tolua_liucheng)
+
