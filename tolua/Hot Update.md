@@ -84,6 +84,7 @@ IEnumerator OnUpdateResource() {
 2. 将新生成的ab和files.txt放入web服务器的下载目录中
 3. 游戏启动,从web服务器中下载files.txt与游戏中的files.txt进行对比,如有资源的md5值不同,则该资源需要更新
 4. 下载更新完成，调用OnResourceInited函数,将ab资源初始化，启动lua虚拟机,游戏开始
+5. 可在场景中新增一个"GlobalGenerator"的GameObject,则可在资源下载过程中获取下载进度和当前下载资源名等信息
 
 ### 热更流程图
 ![Image of unityfile](https://github.com/KleinParadise/Unity/blob/master/pic/tolua_hotupdate1.jpg)  
