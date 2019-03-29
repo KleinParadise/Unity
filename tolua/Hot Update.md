@@ -81,10 +81,11 @@ IEnumerator OnUpdateResource() {
 }
 ```
 1. 通过Packager.cs将lua脚本,资源打包成ab,每个资源生成对应的md5值保存在files.txt中
-2. 将新生成的ab和files.txt放入web服务器的下载目录中
-3. 游戏启动,从web服务器中下载files.txt与游戏中的files.txt进行对比,如有资源的md5值不同,则该资源需要更新
-4. 下载更新完成，调用OnResourceInited函数,将ab资源初始化，启动lua虚拟机,游戏开始
-5. 可在场景中新增一个"GlobalGenerator"的GameObject,则可在资源下载过程中获取下载进度和当前下载资源名等信息
+2. 将新生成的ab和files.txt放入web服务器的下载目录中。使用tomcat服务器,将Packager.cs打包生成在StreamingAssets的所有文件拷贝到tomcat的ROOT文件中
+3. 将AppConst.cs中的UpdateMode设置为true,WebUrl设置为tomcat的地址和端口。
+4. 游戏启动,从tomcat服务器中下载files.txt与游戏中的files.txt进行对比,如有资源的md5值不同,则该资源需要更新。
+5. 下载更新完成，调用OnResourceInited函数,将ab资源初始化，启动lua虚拟机,游戏开始
+6. 可在场景中新增一个"GlobalGenerator"的GameObject,则可在资源下载过程中获取下载进度和当前下载资源名等信息
 
 ### 热更流程图
 ![Image of unityfile](https://github.com/KleinParadise/Unity/blob/master/pic/tolua_hotupdate1.jpg)  
