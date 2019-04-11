@@ -224,9 +224,9 @@ end
 
 8. 修改CustomSettings.cs文件,在customDelegateList新增
 ```c#
-		_DT(typeof(EventCallback0)),
-		_DT(typeof(EventCallback1)),
-		_DT(typeof(LoadCompleteCallback)), 
+_DT(typeof(EventCallback0)),
+_DT(typeof(EventCallback1)),
+_DT(typeof(LoadCompleteCallback)), 
 ```
 在customTypeList新增
 ```c#
