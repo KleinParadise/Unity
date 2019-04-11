@@ -12,5 +12,3 @@
 3. 运行游戏场景,即可看到FairyGUI自带的Examples/Bag示例可在当前工程运行
 
 
-### tolua中如何使用FairyGUI
-1. 打开FairyGUI-unity-master/LuaSupport/README.md文件,参照步骤执行
