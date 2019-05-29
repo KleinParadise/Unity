@@ -82,4 +82,13 @@ Shader "Custom/RampDiffuse" {
 实现该效果最关键的一行。  
 这行代码返回一个rgb值。tex2D函数接受两个参数：第一个参数是操作的texture，第二个参数是需要采样的UV坐标。这里，我们并不像使用一个vertex来代表一个UV坐标进行采样，而仅仅想使用一个漫反射浮点值（即hLambert）来映射到渐变图上的某一个颜色值。最后得到的结果便是，我们将会根据计算得到的Half Lambert光照值来决定光线照射到一个物体表面的颜色变化。
 
+渐变纹理  
+
+![Image of deque](https://github.com/KleinParadise/Unity/blob/master/shader/pic/ramp%20Texture.jpg)
+
+
+实现效果  
+
+![Image of deque](https://github.com/KleinParadise/Unity/blob/master/shader/pic/ramp%20Texture%20diffuse%20shading.png)
+
 
