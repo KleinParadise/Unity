@@ -27,3 +27,9 @@ inline float4 LightingBasicDiffuse (SurfaceOutput s, fixed3 lightDir, half3 view
 2. ``` float rimLight = max(0, dot (s.Normal, viewDir)); ```计算观察方向与观察物体平面的法向量夹角的余弦值
 3. ``` float rim_hLambert = rimLight * 0.5 + 0.5;  ``` 使用Half Lambert方法改善rimLight的值
 4. ``` float3 ramp = tex2D(_RampTex, float2(dif_hLambert, rim_hLambert)).rgb; ```通过dif_hLambert，rim_hLambert从2纹理取样。
+
+当使用了观察方向这个参数后，我们可以创建一个非常简单的衰减渲染结果。下图显示了观察方向和平面法向量进行dot运算后的结果：  
+![Image of deque](https://github.com/KleinParadise/Unity/blob/master/shader/pic/shuaijian.png)
+
+而通过一张二维渐变图，我们可以考虑两个方向对我们观察结果的影响：  
+![Image of deque](https://github.com/KleinParadise/Unity/blob/master/shader/pic/2djianbian.png)
