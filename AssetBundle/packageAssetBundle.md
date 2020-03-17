@@ -42,14 +42,16 @@ buildAssetBundleAuto函数打包AssetBundle流程
 	a.找到当前工程的图集存放目录 D:\package_client\client\Assets\ResOriginal\UI  
 	b.从buildAssetBundleAuto打包命令中获取par-xxx传过来的参数。从参数数据中获取altasCompressQuality的值。如果参数数据无altasCompressQuality的值,设置altasCompressQuality = 3  
 	c.定义设置atlas质量的模板文件数组  
-		```c#
+```c#
 		public static readonly string[] ATLAS_META_TEMPLATE_ARY = new string[]{
 			"BuildConfig/Template/AtlasMetaTemplateNoneQuality.txt",
 			"BuildConfig/Template/AtlasMetaTemplateLowQuality.txt",
 			"BuildConfig/Template/AtlasMetaTemplateNormalQuality.txt",
 			"BuildConfig/Template/AtlasMetaTemplateHighQuality.txt",
 		}
-		```
+```
+	
+	
 	d.根据altasCompressQuality的值从ATLAS_META_TEMPLATE_ARY数组中获取设置atlas质量的模板文件templateQuality.txt,读取该txt文件为 string atlasMetaTemplateContent  
 	e.读取d中获取设置atlas质量的模板文件  
 	f.遍历a中获取的图集存放目录  
