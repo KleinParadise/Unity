@@ -2,17 +2,18 @@
 打包jar包工作路径:D:\package_client\trunk\working
 
 
-unity安卓打包jar包
-1.定位打包jar包工作路径即D:\package_client\trunk\working,清空改目录
-2.定位Java代码目录,目录为D:\package_client\client\Java
-3.通过javac将Java目录中项目需要用到的代码编译为.class文件并输出到working文件夹 javac -encoding utf8 -d D:\package_client\trunk\working\bin -bootclasspath   -classpath D:\package_client\client\Java\lib\*  D:\package_client\client\Java\src\com\xxx\* (包含xxx目录中项目需要用到的java文件)
-4.将编译出的.class文件打包为zero.jar 命令为jar -cvfm D:\package_client\trunk\working\jar\zero.jar *
-5.通过androidSDK中的dx.bat命令将zero.jar中的.class文件转换为dex文件 androidSdkPath\dx.bat --dex --output=D:\package_client\trunk\working\dex\zero.jar D:\package_client\trunk\working\jar\zero.jar
-6.对比老包zero.jar中的classes.dex与新打出包的classes.dex文件的md5来判断改jar是否要更新
+unity安卓打包jar包  
+1. 定位打包jar包工作路径即D:\package_client\trunk\working,清空改目录  
+2. 定位Java代码目录,目录为D:\package_client\client\Java  
+3. 通过javac将Java目录中项目需要用到的代码编译为.class文件并输出到working文件夹 javac -encoding utf8 -d D:\package_client\trunk\working\bin -bootclasspath   -classpath D:\package_client\client\Java\lib\*  D:\package_client\client\Java\src\com\xxx\* (包含xxx目录中项目需要用到的java文件)  
+4. 将编译出的.class文件打包为zero.jar 命令为jar -cvfm D:\package_client\trunk\working\jar\zero.jar *  
+5. 通过androidSDK中的dx.bat命令将zero.jar中的.class文件转换为dex文件 androidSdkPath\dx.bat --dex --output=D:\package_client\trunk\working\dex\zero.jar D:\package_client\trunk\working\jar\zero.jar  
+6. 对比老包zero.jar中的classes.dex与新打出包的classes.dex文件的md5来判断改jar是否要更新  
 
-通过unity.exe调用工程代码设置打包平台为android
-"C:\Program Files\Unity\Editor\Unity.exe" -projectPath "D:\package_client\client" -executeMethod CommonTool.CommandTool.setSymbolsAndPlatform -logFile "D:\noot\pyCallUnityLog\xxx.log" -batchmode -quit par-xxx (xxx是需要传到setSymbolsAndPlatform函数中的参数)
-在setSymbolsAndPlatform函数中通过以下方法获取par-xxx传过来的参数
+通过unity.exe调用工程代码设置打包平台为android  
+"C:\Program Files\Unity\Editor\Unity.exe" -projectPath "D:\package_client\client" -executeMethod   CommonTool.CommandTool.setSymbolsAndPlatform -logFile "D:\noot\pyCallUnityLog\xxx.log" -batchmode -quit par-xxx (xxx是需要传到setSymbolsAndPlatform函数中的参数)  
+在setSymbolsAndPlatform函数中通过以下方法获取par-xxx传过来的参数  
+```c#
 public static Dictionary<string,string> getParDict(){
 	Dictionary<string,string> result = new Dictionary<string,string>();
 	foreach(string arg in System.Environment.GetCommandLineArgs()){
@@ -23,6 +24,7 @@ public static Dictionary<string,string> getParDict(){
 	}
 	return result
 }
+```
 
 使用MSBuild.exe命令将项目中的.csproj生成对应的dll文件
 C:\Windows\Microsoft.NET\Framework\v4.0.xxxx\MSBuild.exe D:\package_client\client\Assembly-CSharp.csproj /t:rebuild /p:Configuration=Release
