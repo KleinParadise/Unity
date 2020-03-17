@@ -26,35 +26,38 @@ public static Dictionary<string,string> getParDict(){
 }
 ```
 
-使用MSBuild.exe命令将项目中的.csproj生成对应的dll文件
-C:\Windows\Microsoft.NET\Framework\v4.0.xxxx\MSBuild.exe D:\package_client\client\Assembly-CSharp.csproj /t:rebuild /p:Configuration=Release
+使用MSBuild.exe命令将项目中的.csproj生成对应的dll文件  
+C:\Windows\Microsoft.NET\Framework\v4.0.xxxx\MSBuild.exe D:\package_client\client\Assembly-CSharp.csproj /t:rebuild /p:Configuration=Release  
 
-使用ildasm.exe反编译dll对比是否有改变
-原理:将dll反编译出的content文件进行对比,判断是否有改变
-xxx目录为Assembly-CSharp.dll存放的目录
-C:\Program Files\Microsoft SDKs\xxx\ildasm.exe xxx\Assembly-CSharp.dll \UTF8 \OUT=xxx\
+使用ildasm.exe反编译dll对比是否有改变  
+原理:将dll反编译出的content文件进行对比,判断是否有改变  
+xxx目录为Assembly-CSharp.dll存放的目录  
+C:\Program Files\Microsoft SDKs\xxx\ildasm.exe xxx\Assembly-CSharp.dll \UTF8 \OUT=xxx\  
 
-通过unity.exe调用工程代码打包AssetBundle
-"C:\Program Files\Unity\Editor\Unity.exe" -projectPath "D:\package_client\client" -executeMethod AssetBundleTool.BuildABHelper.buildAssetBundleAuto -logFile "D:\noot\pyCallUnityLog\xxx.log" -batchmode -quit par-xxx (xxx是需要传到buildAssetBundleAuto函数中的参数)
-buildAssetBundleAuto函数打包AssetBundle流程
-1.定义打包的AssetBundle输出目录 D:\package_client\bin\AssetBundles
-2.更新UIAtlas图集
-	a.找到当前工程的图集存放目录 D:\package_client\client\Assets\ResOriginal\UI
-	b.从buildAssetBundleAuto打包命令中获取par-xxx传过来的参数。从参数数据中获取altasCompressQuality的值。如果参数数据无altasCompressQuality的值,设置altasCompressQuality = 3
-	c.定义设置atlas质量的模板文件数组
+通过unity.exe调用工程代码打包AssetBundle  
+"C:\Program Files\Unity\Editor\Unity.exe" -projectPath "D:\package_client\client" -executeMethod AssetBundleTool.BuildABHelper.buildAssetBundleAuto -logFile "D:\noot\pyCallUnityLog\xxx.log" -batchmode -quit par-xxx (xxx是需要传到buildAssetBundleAuto函数中的参数)  
+buildAssetBundleAuto函数打包AssetBundle流程  
+1. 定义打包的AssetBundle输出目录 D:\package_client\bin\AssetBundles  
+2. 更新UIAtlas图集  
+	a.找到当前工程的图集存放目录 D:\package_client\client\Assets\ResOriginal\UI  
+	b.从buildAssetBundleAuto打包命令中获取par-xxx传过来的参数。从参数数据中获取altasCompressQuality的值。如果参数数据无altasCompressQuality的值,设置altasCompressQuality = 3  
+	c.定义设置atlas质量的模板文件数组  
+		```c#
 		public static readonly string[] ATLAS_META_TEMPLATE_ARY = new string[]{
 			"BuildConfig/Template/AtlasMetaTemplateNoneQuality.txt",
 			"BuildConfig/Template/AtlasMetaTemplateLowQuality.txt",
 			"BuildConfig/Template/AtlasMetaTemplateNormalQuality.txt",
 			"BuildConfig/Template/AtlasMetaTemplateHighQuality.txt",
 		}
-	d.根据altasCompressQuality的值从ATLAS_META_TEMPLATE_ARY数组中获取设置atlas质量的模板文件templateQuality.txt,读取该txt文件为 string atlasMetaTemplateContent
-	e.读取d中获取设置atlas质量的模板文件
-	f.遍历a中获取的图集存放目录
-		遍历当期图集目录
-			1.)从目录中读取png文件
-			2.)根据当期目录的文件夹名设置packingTag(unity会把相同的packingTag的png打包为同一图集)
-			3.)读取改png文件的.meta文件,通过getContentLineBeginWith函数读取guid,alignmet,spritePivot,spriteBorder,maxTextureSize,isReadable,filterMode这些图片属性的配置内容
+		```
+	d.根据altasCompressQuality的值从ATLAS_META_TEMPLATE_ARY数组中获取设置atlas质量的模板文件templateQuality.txt,读取该txt文件为 string atlasMetaTemplateContent  
+	e.读取d中获取设置atlas质量的模板文件  
+	f.遍历a中获取的图集存放目录  
+		遍历当期图集目录  
+			1.)从目录中读取png文件  
+			2.)根据当期目录的文件夹名设置packingTag(unity会把相同的packingTag的png打包为同一图集)  
+			3.)读取改png文件的.meta文件,通过getContentLineBeginWith函数读取  guid,alignmet,spritePivot,spriteBorder,maxTextureSize,isReadable,filterMode这些图片属性的配置内容  
+				```c#
 				private static string getContentLineBeginWith(string file,string content,string beginWith){
 					int startIndex = content.IndexOf(beginWith);
 					if(startIndex > -1){
@@ -65,12 +68,14 @@ buildAssetBundleAuto函数打包AssetBundle流程
 					}
 					throw new System.Exception("meta文件格式不正确"+file)
 				}
-			4.)调用atlasMetaTemplateContent.Replace("#guid",guid)类似方法替换atlasMetaTemplateContent 内容中#guid,#alignmet,#spritePivot,#spriteBorder,#maxTextureSize,#isReadable,#filterMode的值
-			5.)通过atlasMetaTemplateContent为该png生成新的png.meta文件,来实现批量修改png质量的功能
-			6.)通过文件对比工具发现该功能主要修改textureCompression属性来实现图片质量修改的功能,同时设置根据png目录名为同一目录下png设置同一packingTag,将当期目录打包为同一图集
-3.将lua脚本打包为AssetBundles
-	a.找到工程lua文件的存放路径 D:\package_client\client\Assets\uLua\Lua		
-	b.遍历lua文件夹,读取每个lua文件的数据,存放在Dictionary<string byte[]> luaPathDict字典中
+				```
+			4.)调用atlasMetaTemplateContent.Replace("#guid",guid)类似方法替换atlasMetaTemplateContent 内容中#guid,#alignmet,#spritePivot,#spriteBorder,#maxTextureSize,#isReadable,#filterMode的值  
+			5.)通过atlasMetaTemplateContent为该png生成新的png.meta文件,来实现批量修改png质量的功能  
+			6.)通过文件对比工具发现该功能主要修改textureCompression属性来实现图片质量修改的功能,同时设置根据png目录名为同一目录下png设置同一packingTag,将当期目录打包为同一图集  
+3. 将lua脚本打包为AssetBundles  
+	a.找到工程lua文件的存放路径 D:\package_client\client\Assets\uLua\Lua  		
+	b.遍历lua文件夹,读取每个lua文件的数据,存放在Dictionary<string byte[]> luaPathDict字典中  
+		```c#
 		foreach(string item in Directory.GetFiles(fromFolder)){
 			FileInfo fileinfo = new FileInfo(item);
 			if(fileinfo.Extension == ".lua"){
@@ -89,7 +94,7 @@ buildAssetBundleAuto函数打包AssetBundle流程
 				}
 			}
 		}
-		
+		```
 4.将MSBuild.exe编译出的DLL和.meta文件拷贝到Application.dataPath + "/Resources/Driver"文件夹
   并将文件改名为Application.dataPath + "/Resources/Driver/Assembly-CSharp.bytes" 和 Application.dataPath + "/Resources/Driver/Assembly-CSharp.bytes.meta"
   将该dll打包为ab,是为了热更c#代码,通过这种方式热更c#的代码的缺点是要在打包之前定义出需要热更的c#文件,在项目的通过特定的方式获取这些需要热更的c#文件
