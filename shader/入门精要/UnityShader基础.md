@@ -66,3 +66,39 @@
       - 需要在CG代码片中定义和这些属性类型相匹配的变量
       - 不在Propertiss中声明这些属性,也可以在CG代码片定义变量,此时通过脚本向Shader中传递这些属性
       - Properties语义块的作用仅为了这些属性出现在材质面板中
+
+
+  - SubShader
+    - 为什么一个UnityShader里面可存在多个SubShader
+      - 支持多个显卡,旧显卡使用计算复杂度较低的SubShader,高级显卡使用计算复杂度较高的SubShader
+      - Unity会扫描所有的SubShader语义块,选择第一个能够在目标平台上运行的SubShader
+
+    - SubShader语义块
+      ```CG
+        SubShader{
+          [Tags]
+          [RenderSetup]
+          Pass{
+          }
+          //ohter Passes
+        }
+      ```
+      
+    - Tag
+      - 键值对,键和值都是字符串类型
+      - 通过Tag键值对在SubShader与渲染引擎中架起桥梁,即通过Tag告诉渲染引擎SubShader希望怎样以及何时渲染这个对象
+      - Tag结构
+        ```cg
+          Tags{"TarName1" ="Value1" "TarName2" ="Value2"}
+        ```        
+      - Tags支持的标签类型
+        标签类型 | 说明 | 例子
+        ------------ | -------------  | -------------
+        QUEUE | 控制渲染顺序,指定该物体属于哪一个渲染队列,通过这种方式可以保证所有的透明物体在所有的不透明物体后面渲染 | Tags{"Queue" = "Transparent"}
+        RenderType | 对一个着色器进行分类,如指定该着色器是透明着色器还是不透明着色器 | Tags{"RenderType" = "Opaque"}
+        DisableBatching | 通过该标签指明是否对该SubShader使用批处理(如在模型空间的坐标进行顶点动画) | Tags{"DisableBatching" = "True"}
+        ForceNoShadowCasting | 控制使用该SubShader的物体是否会投射阴影 | Tags{"ForceNoShadowCasting" = "True"}
+        Vector | (number,number,number,number) | _Vector("Vector",Vector) = (2,3,6,1)
+        2D | "defaulttexture" {} | _2D("2D",2D) = "" {}
+        Cube | "defaulttexture" {} | _Cube("Cube",Cube) = "white" {}
+        3D | "defaulttexture" {} | _3D("3D",3D) = "black" {}
