@@ -6,6 +6,9 @@
   - 材质
     - 材质需要结合一个GameObjec的Mesh或Particle Systems组件来工作,它与shader配合决定了游戏对象看起来的样子.
     - Unity5.x版本中新建一个材质会默认使用内置的基于物理渲染的着色器Standard Shader.
+  - Mesh
+    - 在Unity中Mesh用来描述物体的形状.
+    - 主要属性内容包括顶点坐标，法线，纹理坐标，三角形绘制序列等其他有用属性和功能.
   - UnityShader
     - Unity提供的4种shader模板
       - Standard Sruface Shader 包含了标准光照模型(基于物理的渲染方法)表面着色器模板
@@ -32,3 +35,34 @@
     ```cg
       Shader "Custom/MyShader"
     ```
+    
+  - Properties
+    - 材质与UnityShader直接的桥梁
+    ```cg
+      Propertise{
+        Name("display name",PropertyType) = DefaultValue
+      }
+      //Name 在shader中访问该属性通过Name,属性名字通常由一个下划线开始
+      //"display name" 出现在材质面板的显示名称
+      //PropertyType 为该属性指定的类型
+      //DefaultValue 为该属性指定一个默认值
+    ```
+    - Properties语义支持的类型
+      属性类型 | 默认值的定义语法 | 例子
+      ------------ | -------------  | -------------
+      Int | number | _Int("Int",Int) = 2
+      Float | number | _Float("Float",Float) = 1.5
+      Range(min,max) | number | _Range("Range",Range(0.0,5.0)) = 3.0
+      Color | (number,number,number,number) | _Color("Color",Color) = (1,1,1,1)
+      Vector | (number,number,number,number) | _Vector("Vector",Vector) = (2,3,6,1)
+      2D | "defaulttexture" {} | _2D("2D",2D) = "" {}
+      Cube | "defaulttexture" {} | _Cube("Cube",Cube) = "white" {}
+      3D | "defaulttexture" {} | _3D("3D",3D) = "black" {}
+      
+    - 2D,Cube,3D纹理类型
+      - 通过一个空字符串和一个花括号指定,字符串要不是空的要么是内置的纹理名称("white","black","gray","bump")花括号用于指定一些纹理属性5.0以后的版本被移除
+
+    - shader中如何访问这些属性
+      - 需要在CG代码片中定义和这些属性类型相匹配的变量
+      - 不在Propertiss中声明这些属性,也可以在CG代码片定义变量,此时通过脚本向Shader中传递这些属性
+      - Properties语义块的作用仅为了这些属性出现在材质面板中
