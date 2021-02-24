@@ -97,8 +97,8 @@
         QUEUE | 控制渲染顺序,指定该物体属于哪一个渲染队列,通过这种方式可以保证所有的透明物体在所有的不透明物体后面渲染 | Tags{"Queue" = "Transparent"}
         RenderType | 对一个着色器进行分类,如指定该着色器是透明着色器还是不透明着色器 | Tags{"RenderType" = "Opaque"}
         DisableBatching | 通过该标签指明是否对该SubShader使用批处理(如在模型空间的坐标进行顶点动画) | Tags{"DisableBatching" = "True"}
-        ForceNoShadowCasting | 控制使用该SubShader的物体是否会投射阴影 | Tags{"ForceNoShadowCasting" = "True"}
-        Vector | (number,number,number,number) | _Vector("Vector",Vector) = (2,3,6,1)
+        ForceNoShadowCasting | 如果标签值为True那么使用该SubShader的物体不会受Projector的影响,通常用于半透明物体 | Tags{"ForceNoShadowCasting" = "True"}
+        IgnoreProjector | (number,number,number,number) | Tags{"IgnoreProjector" = "True"}
         2D | "defaulttexture" {} | _2D("2D",2D) = "" {}
         Cube | "defaulttexture" {} | _Cube("Cube",Cube) = "white" {}
         3D | "defaulttexture" {} | _3D("3D",3D) = "black" {}
