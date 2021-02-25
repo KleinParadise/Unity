@@ -91,17 +91,7 @@
         ```cg
           Tags{"TarName1" ="Value1" "TarName2" ="Value2"}
         ```        
-      - Tags支持的标签类型
-        标签类型 | 说明 | 例子
-        ------------ | -------------  | -------------
-        QUEUE | 控制渲染顺序,指定该物体属于哪一个渲染队列,通过这种方式可以保证所有的透明物体在所有的不透明物体后面渲染 | Tags{"Queue" = "Transparent"}
-        RenderType | 对一个着色器进行分类,如指定该着色器是透明着色器还是不透明着色器 | Tags{"RenderType" = "Opaque"}
-        DisableBatching | 通过该标签指明是否对该SubShader使用批处理(如在模型空间的坐标进行顶点动画) | Tags{"DisableBatching" = "True"}
-        ForceNoShadowCasting | 如果标签值为True那么使用该SubShader的物体不会受Projector的影响,通常用于半透明物体 | Tags{"ForceNoShadowCasting" = "True"}
-        IgnoreProjector | (number,number,number,number) | Tags{"IgnoreProjector" = "True"}
-        2D | "defaulttexture" {} | _2D("2D",2D) = "" {}
-        Cube | "defaulttexture" {} | _Cube("Cube",Cube) = "white" {}
-        3D | "defaulttexture" {} | _3D("3D",3D) = "black" {}
+      - [更多SubShader Tags介绍](https://github.com/KleinParadise/Unity/blob/master/shader/%E5%85%A5%E9%97%A8%E7%B2%BE%E8%A6%81/SubShader%20Tags.md)
         
     - RenderSetup
       - 设置显卡的各种状态,并将应用到所有的pass上,如果只想在某一个Pass设置该状态,可在Pass语义块中进行单独设置
