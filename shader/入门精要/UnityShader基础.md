@@ -102,3 +102,64 @@
         2D | "defaulttexture" {} | _2D("2D",2D) = "" {}
         Cube | "defaulttexture" {} | _Cube("Cube",Cube) = "white" {}
         3D | "defaulttexture" {} | _3D("3D",3D) = "black" {}
+        
+    - RenderSetup
+      - 设置显卡的各种状态,并将应用到所有的pass上,如果只想在某一个Pass设置该状态,可在Pass语义块中进行单独设置
+      - 渲染状态设置选项 
+        状态名称 | 设置指令 | 解释
+        ------------ | -------------  | -------------
+        Cull | CullBack/Front/Off  | 设置剔除模式，剔除背面/正面/关闭剔除
+        ZTest | ZTestLess Greater/LEqual/GEqual/NotEqual/Always | 设置深度测试时使用的函数
+        ZWrite | ZWrite On/Off | 开启/关闭深度写入
+        Blend | Blend SrcFactor DstFactor | 开启并设置混合模式
+        
+        
+        
+    - Pass
+      - 语义
+        ```CG
+          Pass {
+            [Name]
+            [Tags]
+            [RenderSetup]
+            //other code
+          }
+          //
+          //
+        ```
+      - Name  
+        - Name 定义该Pass的名称,通过该名称可以使用UsePass命令使用其他UnityShader的Pass,使用Pass是要使用大写形式的Name
+      - RenderSetup
+        - SubShader的RenderSetup同样适用与Pass
+      - Tags
+        - Pass的Tag不用于SubShader的Tags,作用也是告诉渲染引擎怎么样渲染该物体 
+        - Pass标签的类型
+          标签类型 | 说明 | 例子
+          ------------ | -------------  | -------------
+          LightMode | 定义该Pass在Unity的渲染流水线的角色  | Tags{"LightMode" = "ForwardBase"}
+          RequireOptions | 用于指定满足某些条件才渲染该Pass | Tags{"RequireOptions" = "SoftVegetation"}
+          
+          
+    - FallBack
+      - 用于告诉Unity,如果上面所有的SubShader在这块显卡上都不能运行,那就使用这个默认shader
+      - 语义
+        ```CG
+          FallBack "name"
+          //也可以关闭FallBack功能
+          FallBack off
+        ```
+
+- **UnityShader的形式**
+  - 表面着色器
+    - Unity自己创造的一种着色器类型,使用该着色器Unity会默认处理很多光照细节
+    - 定义在SubShader语义块中的CGPROGRAM和ENDCG之间,而并不是定义在Pass块的CGPROGRAM和ENDCG之间
+    - Unity会将其转化为一个包含多个Pass的顶点/片段着色器
+  - 顶点/片段着色器
+    - 定义在Pass块的CGPROGRAM和ENDCG之间
+    - 灵活性最高,可以用来控制渲染的细节,需要处理的东西更多
+  - 固定函数着色器
+    - 定义在Pass语义块中,只能使用shaderLab的渲染设置命令来编写,不能使用CG/HLSL
+  - 如何选择?  
+    - 与光源有关,使用表面着色器,要关注性能
+    - 光照少,实现自定义的渲染效果,使用顶点/片段着色器
+    - 老设备固定管线着色器
