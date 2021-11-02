@@ -16,3 +16,13 @@ https://www.jianshu.com/p/95cb4621206e
 
 lua闭包  
 http://geekluo.com/contents/2014/04/12/5-lua-closure-structure.html  
+
+shaderLab  
+https://developer.unity.cn/projects/openday-shaderlab 
+
+内存管理  
+https://zhuanlan.zhihu.com/p/362941227  
+
+https://zhuanlan.zhihu.com/p/381859536  
+
+
