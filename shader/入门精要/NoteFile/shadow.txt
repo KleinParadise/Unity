@@ -1,0 +1,45 @@
+Light
+	constructor
+		mesh
+		material
+		lightIntensity //强度
+		lightColor //颜色
+		lightPos
+		focalPoint
+		lightUp
+		hasShadowMap
+		gl
+	
+	CalcLightMvp(translate,scale) //把顶点转换到光源的矩阵
+	
+	
+	
+MeshRender 中包含mesh和material 
+	mesh中包括顶点,法线等数据
+	material编译shader并向shader传输数据
+	通过material将mesh的数据传给shader
+	
+	
+	
+Mesh
+
+
+
+Material
+
+
+
+生成阴影
+1.Frist Pass 根据光源的位置生成深度图
+	a.构造光源
+	
+	b.构造shadowmap的MeshRender
+		
+	
+	
+	
+	
+	
+		
+		
+
